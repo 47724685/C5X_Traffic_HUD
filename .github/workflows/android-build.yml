@@ -23,8 +23,17 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Set up Android SDK and accept licenses
+        uses: android-actions/setup-android@v4
+        with:
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+
+      # Explicitly accept any remaining SDK licenses in non-interactive CI.
+      - name: Accept remaining Android SDK licenses
+        shell: bash
+        run: yes | sdkmanager --licenses >/dev/null
 
       - name: Set up Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
