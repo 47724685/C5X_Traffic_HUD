@@ -33,7 +33,11 @@ jobs:
       # Explicitly accept any remaining SDK licenses in non-interactive CI.
       - name: Accept remaining Android SDK licenses
         shell: bash
-        run: yes | sdkmanager --licenses >/dev/null
+        run: |
+          # sdkmanager exits after accepting licenses; yes may receive SIGPIPE.
+          # Disable pipefail so the step reports sdkmanager's exit status.
+          set +o pipefail
+          yes | sdkmanager --licenses >/dev/null
 
       - name: Set up Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
